@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feedback Form</title>
+<style>
+body{font-family:Arial;background:#f4f4f4}
+.container{width:400px;margin:auto;background:white;padding:20px;border-radius:10px}
+input,textarea{width:100%;padding:10px;margin:10px 0;border:1px solid gray}
+input:hover,textarea:hover{background:#eef}
+button{padding:10px;width:100%;background:#4CAF50;color:white;border:none}
+#msg{color:red}
+</style>
+<script>
+function validateName(){let name=document.getElementById("name").value;if(name.length<3){document.getElementById("msg").innerHTML="Name must be at least 3 characters";return false;}document.getElementById("msg").innerHTML="";return true;}
+function validateEmail(){let email=document.getElementById("email").value;let pattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/;if(!email.match(pattern)){document.getElementById("msg").innerHTML="Invalid Email";return false;}document.getElementById("msg").innerHTML="";return true;}
+function validateAll(){return validateName()&&validateEmail();}
+function confirmSubmit(){alert("Feedback Submitted Successfully");}
+</script>
+</head>
+<body>
+<div class="container">
+<h2>Customer Feedback</h2>
+<form onsubmit="return validateAll()">
+<input type="text" id="name" placeholder="Your Name" onkeyup="validateName()">
+<input type="text" id="email" placeholder="Your Email" onkeyup="validateEmail()">
+<textarea placeholder="Your Feedback"></textarea>
+<p id="msg"></p>
+<button type="submit" ondblclick="confirmSubmit()">Submit</button>
+</form>
+</div>
+</body>
+</html>
