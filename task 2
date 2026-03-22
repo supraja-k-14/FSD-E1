@@ -1,0 +1,81 @@
+<?php
+include "db.php";
+$order="name";
+if(isset($_GET['sort'])){
+$order=$_GET['sort'];
+}
+$dept_filter="";
+if(isset($_GET['dept'])){
+$d=$_GET['dept'];
+$dept_filter="WHERE department='$d'";
+}
+$query="SELECT * FROM students $dept_filter ORDER BY $order";
+$result=$conn->query($query);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<style>
+table{
+border-collapse:collapse;
+width:80%;
+margin:auto;
+}
+th,td{
+border:1px solid black;
+padding:10px;
+text-align:center;
+}
+</style>
+</head>
+<body>
+<h2 align="center">Student Dashboard</h2>
+<center>
+<a href="dashboard.php?sort=name">Sort by Name</a> |
+<a href="dashboard.php?sort=dob">Sort by DOB</a>
+<br><br>
+<form>
+Filter by Department
+<select name="dept">
+<option value="">All</option>
+<option value="CSE">CSE</option>
+<option value="IT">IT</option>
+<option value="ECE">ECE</option>
+</select>
+<button type="submit">Filter</button>
+</form>
+</center>
+<br>
+<table>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>DOB</th>
+<th>Department</th>
+<th>Phone</th>
+</tr>
+<?php
+while($row=$result->fetch_assoc()){
+echo "<tr>";
+echo "<td>".$row['name']."</td>";
+echo "<td>".$row['email']."</td>";
+echo "<td>".$row['dob']."</td>";
+echo "<td>".$row['department']."</td>";
+echo "<td>".$row['phone']."</td>";
+echo "</tr>";
+}
+?>
+</table>
+<br>
+<center>
+<h3>Students Per Department</h3>
+<?php
+$count=$conn->query("SELECT department,COUNT(*) as total FROM students GROUP BY department");
+while($c=$count->fetch_assoc()){
+echo $c['department']." : ".$c['total']."<br>";
+}
+?>
+</center>
+</body>
+</html>
