@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<script>
+function validate(){
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+if(user=="" || pass==""){
+document.getElementById("error").innerHTML="All fields required";
+return false;
+}
+}
+</script>
+</head>
+<body>
+<h2 align="center">Login</h2>
+<form action="login.php" method="POST" onsubmit="return validate()">
+<center>
+<input type="text" id="username" name="username" placeholder="Username">
+<br><br>
+<input type="password" id="password" name="password" placeholder="Password">
+<br><br>
+<p id="error" style="color:red"></p>
+<button type="submit">Login</button>
+</center>
+</form>
+</body>
+</html>
