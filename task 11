@@ -1,0 +1,32 @@
+package com.example.repository;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.entity.Student;
+public interface StudentRepository extends JpaRepository<Student,Integer>{
+List<Student> findByDepartment(String department);
+List<Student> findByAgeGreaterThan(int age);
+Page<Student> findByDepartment(String department,Pageable pageable);
+}
+package com.example.service;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import com.example.entity.Student;
+import com.example.repository.StudentRepository;
+@Service
+public class StudentService{
+@Autowired
+private StudentRepository repo;
+public List<Student> getStudentsByDepartment(String dept){
+return repo.findByDepartment(dept);
+}
+public List<Student> getStudentsByAge(int age){
+return repo.findByAgeGreaterThan(age);
+}
+public List<Student> getStudentsWithPagination(String dept,int page,int size){
+return repo.findByDepartment(dept,PageRequest.of(page,size)).getContent();
+}
+}
