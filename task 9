@@ -1,0 +1,36 @@
+package com.example.controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+@Controller
+public class EmployeeController{
+@GetMapping("/employee")
+public String showEmployee(Model model){
+model.addAttribute("id",101);
+model.addAttribute("name","Anita");
+model.addAttribute("department","CSE");
+return "employee";
+}
+}
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<html>
+<head>
+<title>Employee Details</title>
+</head>
+<body>
+<h2>Employee Information</h2>
+ID:${id}<br>
+Name:${name}<br>
+Department:${department}
+</body>
+</html>
+package com.example;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication
+public class SpringBootApplication{
+public static void main(String[]args){
+SpringApplication.run(SpringBootApplication.class,args);
+}
+
+}
