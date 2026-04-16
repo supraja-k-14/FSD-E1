@@ -1,0 +1,42 @@
+public class Calculator {
+    public static void main(String[] args) {
+        int a = 20;
+        int b = 10;
+        System.out.println("Simple Calculator using Git Branching Example");
+        System.out.println("Addition: " + add(a, b));
+        // These features can be added in different branches
+        System.out.println("Subtraction: " + subtract(a, b));
+        System.out.println("Multiplication: " + multiply(a, b));
+    }
+    // Addition method
+    public static int add(int x, int y) {
+        return x + y;
+    }
+    // Subtraction method
+    public static int subtract(int x, int y) {
+        return x - y;
+    }
+    // Multiplication method
+    public static int multiply(int x, int y) {
+        return x * y;
+    }
+}
+
+// Initialize Repository
+git init
+// Add and Commit
+git add Calculator.java
+git commit -m "Initial calculator program"
+//Create Feature Branch
+git branch feature-division
+git checkout feature-division
+Add division method in this branch.
+//Commit Feature
+git add Calculator.java
+git commit -m "Added division feature"
+// Merge Branch
+git checkout main
+git merge feature-division
+// Rebase Example
+git checkout feature-division
+git rebase main
