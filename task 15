@@ -1,0 +1,87 @@
+package com.eurekaserver;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+@SpringBootApplication
+@EnableEurekaServer
+public class EurekaServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class,args);
+    }
+}
+
+//product microservice
+package com.productservice;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import java.util.*;
+@SpringBootApplication
+@EnableDiscoveryClient
+@RestController
+@RequestMapping("/products")
+public class ProductServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProductServiceApplication.class, args);
+    }
+    static class Product {
+        public int id;
+        public String name;
+        public double price;
+        public Product() {}
+        public Product(int id,String name,double price){
+            this.id=id;
+            this.name=name;
+            this.price=price;
+        }
+    }
+    Map<Integer,Product> products=new HashMap<>();
+    int idCounter=1;
+    @PostMapping
+    public Product addProduct(@RequestBody Product p){
+        p.id=idCounter++;
+        products.put(p.id,p);
+        return p;
+    }
+    @GetMapping
+    public Collection<Product> getProducts(){
+        return products.values();
+    }
+}
+
+//order microservice
+package com.orderservice;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+@SpringBootApplication
+@EnableDiscoveryClient
+@RestController
+@RequestMapping("/orders")
+public class OrderServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderServiceApplication.class, args);
+    }
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    static class Order {
+        public int productId;
+        public int quantity;
+    }
+    private final RestTemplate restTemplate;
+    public OrderServiceApplication(RestTemplate restTemplate){
+        this.restTemplate=restTemplate;
+    }
+    @PostMapping
+    public String createOrder(@RequestBody Order order){
+        String productServiceURL="http://product-service/products";
+        Object product=restTemplate.getForObject(productServiceURL,Object.class);
+        return "Order placed successfully. Product service response: "+product;
+    }
+}
