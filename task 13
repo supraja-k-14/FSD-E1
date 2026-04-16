@@ -1,0 +1,85 @@
+package com.example.productapi;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import java.util.*;
+@SpringBootApplication
+@RestController
+@RequestMapping("/products")
+public class ProductApiApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProductApiApplication.class, args);
+    }
+    static class Product {
+        public int id;
+        @NotBlank(message = "Product name cannot be empty")
+        public String name;
+        @Min(value = 1, message = "Price must be greater than 0")
+        public double price;
+        @NotBlank(message = "Category cannot be empty")
+        public String category;
+    }
+    Map<Integer, Product> productMap = new HashMap<>();
+    int idCounter = 1;
+    @GetMapping
+    public Collection<Product> getAllProducts() {
+        return productMap.values();
+    }
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable int id) {
+        Product p = productMap.get(id);
+        if (p == null) {
+            throw new RuntimeException("Product not found");
+        }
+        return p;
+    }
+    @PostMapping
+    public Product addProduct(@Valid @RequestBody Product product) {
+        product.id = idCounter++;
+        productMap.put(product.id, product);
+        return product;
+    }
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable int id, @Valid @RequestBody Product product) {
+        if (!productMap.containsKey(id)) {
+            throw new RuntimeException("Product not found");
+        }
+        product.id = id;
+        productMap.put(id, product);
+        return product;
+    }
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable int id) {
+        if (!productMap.containsKey(id)) {
+            throw new RuntimeException("Product not found");
+        }
+        productMap.remove(id);
+        return "Product Deleted";
+    }
+}
+@ControllerAdvice
+class GlobalExceptionHandler {
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNotFound(RuntimeException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return error;
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(err ->
+                errors.put(err.getField(), err.getDefaultMessage())
+        );
+        return errors;
+    }
+}
