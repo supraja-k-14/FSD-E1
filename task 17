@@ -1,0 +1,36 @@
+package com.orderservice;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.context.annotation.Bean;
+@SpringBootApplication
+@RestController
+@RequestMapping("/orders")
+public class OrderServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderServiceApplication.class, args);
+    }
+    static class Order {
+        public int productId;
+        public int quantity;
+    }
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    private final RestTemplate restTemplate;
+    public OrderServiceApplication(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+    @PostMapping
+    public String createOrder(@RequestBody Order order) {
+        try {
+            String url = "http://localhost:8081/products/" + order.productId;
+            Object product = restTemplate.getForObject(url, Object.class);
+            return "Order created successfully for product: " + product;
+        } catch (Exception e) {
+            return "Failed to fetch product. Product Service may be unavailable.";
+        }
+    }
+}
