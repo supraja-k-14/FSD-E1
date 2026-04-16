@@ -1,0 +1,25 @@
+public class SampleProject {
+    public static void main(String[] args) {
+        System.out.println("Microservices Sample Project");
+        System.out.println("Demonstrating Git Version Control");
+        int a = 10;
+        int b = 20;
+        int sum = addNumbers(a, b);
+        System.out.println("Sum of numbers: " + sum);
+    }
+    public static int addNumbers(int x, int y) {
+        return x + y;
+    }
+}
+//Initialize Repository
+git init
+// Add File
+git add SampleProject.java
+// Commit Changes
+git commit -m "Initial commit of SampleProject"
+// View Commit History
+git log
+// Connect to GitHub Repository
+git remote add origin https://github.com/username/sample-project.git
+// Push Code to GitHub
+git push -u origin main
