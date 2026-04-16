@@ -1,0 +1,45 @@
+package com.productservice;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
+class ProductServiceTest {
+    static class Product {
+        int id;
+        String name;
+        double price;
+        Product(int id,String name,double price){
+            this.id=id;
+            this.name=name;
+            this.price=price;
+        }
+    }
+    static class ProductService {
+
+        Map<Integer,Product> products=new HashMap<>();
+
+        public Product addProduct(Product p){
+            products.put(p.id,p);
+            return p;
+        }
+        public Product getProduct(int id){
+            return products.get(id);
+        }
+    }
+    @Test
+    void testAddProduct(){
+        ProductService service=new ProductService();
+        Product p=new Product(1,"Laptop",55000);
+        Product result=service.addProduct(p);
+        assertEquals("Laptop",result.name);
+        assertEquals(55000,result.price);
+    }
+    @Test
+    void testGetProduct(){
+        ProductService service=new ProductService();
+        Product p=new Product(1,"Mobile",20000);
+        service.addProduct(p);\
+        Product result=service.getProduct(1);
+        assertNotNull(result);
+        assertEquals("Mobile",result.name);
+    }
+}
