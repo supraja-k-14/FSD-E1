@@ -1,0 +1,54 @@
+package com.example.productapi;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+@SpringBootApplication
+@RestController
+@RequestMapping("/products")
+public class ProductApiApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProductApiApplication.class, args);
+    }
+    static class Product {
+        public int id;
+        public String name;
+        public double price;
+        public String category;
+        public Product() {}
+        public Product(int id, String name, double price, String category) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+            this.category = category;
+        }
+    }
+    Map<Integer, Product> productMap = new HashMap<>();
+    int idCounter = 1;
+    @GetMapping
+    public Collection<Product> getAllProducts() {
+        return productMap.values();
+    }
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable int id) {
+        return productMap.get(id);
+    }
+    @PostMapping
+    public Product addProduct(@RequestBody Product product) {
+        product.id = idCounter++;
+        productMap.put(product.id, product);
+        return product;
+    }
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable int id, @RequestBody Product product) {
+        product.id = id;
+        productMap.put(id, product);
+        return product;
+    }
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable int id) {
+        productMap.remove(id);
+        return "Product Deleted";
+    }
+}
